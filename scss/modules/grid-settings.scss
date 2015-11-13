@@ -1,0 +1,13 @@
+@import "../neat/neat-helpers"; 
+
+// # of columns.
+$grid-columns: 			4;
+
+// Define breakpoints.
+$first-breakpoint-value: 	601px;
+$second-breakpoint-value: 	901px;
+$third-breakpoint-value: 	1900px;
+
+$medium:	new-breakpoint(min-width $second-breakpoint-value 8);
+$large: 	new-breakpoint(min-width $second-breakpoint-value 12);
+$xlarge: 	new-breakpoint(min-width $third-breakpoint-value 16);
