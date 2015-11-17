@@ -7,12 +7,13 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Jayvin Duong",
-  "license": "ISC",
   "devDependencies": {
     "grunt": "*",
     "grunt-cli": "*",
-    "grunt-contrib-sass": "*",
     "grunt-contrib-cssmin": "~0.4.1",
-    "grunt-contrib-watch": "~0.4.3"
+    "grunt-contrib-sass": "*",
+    "grunt-contrib-uglify": "^0.10.1",
+    "grunt-contrib-watch": "~0.4.3",
+    "grunt-react": "^0.12.3"
   }
 }

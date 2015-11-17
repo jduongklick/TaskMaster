@@ -15,15 +15,42 @@
 	padding: 15px;
 	margin-bottom: 15px;
 	@include span-columns(4);
+	@include outer-container;
 
-	.title {
+	.heading {
 		font-size: 18px;
+		border-bottom: 1px solid #CCCCCC;
+		padding-bottom: 8px;
+		margin-bottom: 8px;
 	}
 
 	.metadata {
-		font-size: 14px;
+		font-size: 13px;
 	}
 
+}
+
+.card-photo-container {
+	@include span-columns(1);
+	text-align: center;
+
+	.photo {
+		background-size: cover;
+		border-radius: 100%;
+		display: block;
+		margin: 0 auto;
+		width: 75px;
+		height: 75px;
+	}
+
+	.photo-of {
+		font-size: 14px;
+		margin-top: 10px;
+	}	
+}
+
+.card-content-container {
+	@include span-columns(3);
 }
 
 @include media($large) {

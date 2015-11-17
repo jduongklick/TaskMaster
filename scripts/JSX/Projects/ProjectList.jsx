@@ -14,12 +14,10 @@ var ProjectList = React.createClass({
 			component.setState({
 				UserID: id
 			});
-		})
-		.then(function() {
+
 			return genome_api.getUserTasks(component.state.UserID);
 		})
 		.then(function(data) {
-			//console.log(data.Entries);
 
 			var projectIDs = [];
 
@@ -36,7 +34,6 @@ var ProjectList = React.createClass({
 			component.setState({
 				Projects: projectIDs
 			});
-			
 		});
 
 	},

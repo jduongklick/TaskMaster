@@ -1,7 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
 	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+
 	<title>Taskmaster</title>
 
 	<link rel="stylesheet" href="style.css">
@@ -9,28 +14,16 @@
 </head>
 
 <body>
-	
-	<div id="app-container" class="app-container container"></div>
 
-	<script type="text/javascript" src="scripts/vendor/q.js"></script>
-	<script type="text/javascript" src="scripts/vendor/react.min.js"></script>
-	<script type="text/javascript" src="scripts/vendor/JSXTransformer.js"></script>
-	<script type="text/javascript" src="scripts/vendor/jquery-1.9.1.min.js"></script>
-	<script type="text/javascript" src="scripts/vendor/TimelineLite.min.js"></script>
-	<script type="text/javascript" src="scripts/vendor/TimelineMax.min.js"></script>
-	<script type="text/javascript" src="scripts/vendor/TweenLite.min.js"></script>
-	<script type="text/javascript" src="scripts/vendor/TweenMax.min.js"></script>
-	
-	<script type="text/javascript" src="scripts/app.js"></script>
+	<header class="header">
+		<div class="btn-back">Back</div>
+		<div class="header-title"></div>
+	</header>
 
-	<script type="text/jsx" src="scripts/Tasks/TaskAddComment.js"></script>
-	<script type="text/jsx" src="scripts/Tasks/TaskComment.js"></script>
-	<script type="text/jsx" src="scripts/Tasks/TaskDescription.js"></script>
-	<script type="text/jsx" src="scripts/Tasks/TaskItem.js"></script>
-	<script type="text/jsx" src="scripts/Tasks/TaskList.js"></script>
-	<script type="text/jsx" src="scripts/Projects/ProjectItem.js"></script>
-	<script type="text/jsx" src="scripts/Projects/ProjectList.js"></script>
-	<script type="text/jsx" src="scripts/TaskMaster.js"></script>
+	<div id="app-container" class="app-container container">
+	</div>
+
+	<script type="text/javascript" src="scripts/taskmaster.min.js"></script>
 	
 </body>
 

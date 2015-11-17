@@ -13,15 +13,12 @@ var TaskComment = React.createClass({
 
 		return (
 			<li className="comment">
-				<div className="comment-author">
-					<div className="author-photo" style={userPhoto}></div>
-					<div className="author-name">{this.props.details.UserName}</div>
+				<div className="card-photo-container">
+					<div className="photo" style={userPhoto}></div>
+					<div className="photo-of">{this.props.details.UserName}</div>
 				</div>
-				<div className="comment-contents" dangerouslySetInnerHTML={this.createMarkup(this.props.details.Comment)}></div>
-				
+				<div className="card-content-container" dangerouslySetInnerHTML={this.createMarkup(this.props.details.Comment)}></div>
 			</li>
 		);
 	}
 });
-
-//{this.props.details.Created}

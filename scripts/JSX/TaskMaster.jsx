@@ -3,23 +3,28 @@
  */
 $(document).ready(function(e) {
 	onRouteChanged();
+
+	// Event Listeners.
+	$('.btn-back').click(onBackClicked);
+	window.addEventListener('hashchange', onRouteChanged, false);
+
 });
 
 /**
  * Event listener when the URL hash changes.
  */
-window.addEventListener('hashchange', onRouteChanged, false);
 function onRouteChanged() {
+
+	var app_conainter = document.getElementById('app-container');
 
 	// Unmount current component.
 	React.unmountComponentAtNode(document.getElementById('app-container'));
-
 
 	// Load project view.
 	if (window.location.hash.indexOf("/project/") > 0) {
 		React.render(
 			<TaskList/>,
-			document.getElementById('app-container')
+			app_conainter
 		);
 	}
 
@@ -27,25 +32,22 @@ function onRouteChanged() {
 	else if (window.location.hash.indexOf("/task/") > 0) {
 		React.render(
 			<TaskDescription/>,
-			document.getElementById('app-container')
+			app_conainter
 		);
 	}
 
 	else {
-/*
 		React.render(
 			<ProjectList/>,
-			document.getElementById('app-container')
+			app_conainter
 		);
-		
-*/
-
-		React.render(
-			<TaskList/>,
-			document.getElementById('app-container')
-		);
-		
 	}
 
 }
 
+/**
+ * 
+ */
+function onBackClicked(e) {
+	window.history.back();
+}

@@ -1,0 +1,12 @@
+/**
+ * =Header
+ */
+ .header {
+ 	background: cadetblue;
+	box-sizing: border-box;
+ 	padding: 10px;
+ 	position: fixed;
+ 	width: 100%;
+ 	height: 50px;
+ 	@include outer-container;
+ }

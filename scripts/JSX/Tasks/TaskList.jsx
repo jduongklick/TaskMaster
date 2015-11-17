@@ -2,7 +2,6 @@ var TaskList = React.createClass({
 	getInitialState: function(){
 		return {
 			tasks: [],
-			UserID: ""
 		};
 	},
 	componentDidMount: function() {
@@ -10,22 +9,11 @@ var TaskList = React.createClass({
 		var component = this;
 
 		// Get current user ID and their assigned tasks.
-		genome_api.getCurrentUser().then(function(id) {
-			component.setState({
-				UserID: id
-			});
-		})
-		.then(function() {
-			return genome_api.getUserTasks(component.state.UserID);
-		})
-		.then(function(data) {
-			//console.log(data.Entries);
+		genome_api.getProjectTasks(window.location.hash.substring(10)).then(function(data) {
 			component.setState({
 				tasks: data.Entries
 			});
 		});
-
-		//TweenMax.staggerTo($('.task-item'), 1, {opacity: 1, ease:Power2.easeInOut});
 
 	},
 	render: function() {

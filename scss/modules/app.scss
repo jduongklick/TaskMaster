@@ -5,9 +5,10 @@ body {
 	background: #EEEEEE;
 	font-family: 'Helvetica-Light', Arial, sans-serif;
 	font-weight: lighter;
+	overflow-x: hidden;
 	padding: 0;
 	margin: 0;
-	overflow-x: hidden;
+	width: 480px;
 }
 
 h1, h2, h3 {
@@ -19,14 +20,14 @@ h1 {
 	font-weight: normal;
 }
 
-h1 {
+h2 {
 	font-size: 20px;
 	font-weight: normal;
 }
 
 .app-container {
 	@include outer-container;
-	padding: 10px;
+	padding: 65px 10px 10px 10px;
 }
 
 /**
@@ -35,4 +36,3 @@ h1 {
 .is-hidden {
 	display: none;
 }
-
