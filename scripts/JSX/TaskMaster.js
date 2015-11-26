@@ -1,3 +1,44 @@
+var Header = React.createClass({displayName: "Header",
+	getInitialState: function() {
+		return {
+			history: 0,
+			title: ""
+		};
+	},
+	componentDidMount: function() {
+
+	},
+	onBackSelect: function() {
+		window.history.back();
+	},
+	onFowardSelect: function() {
+		window.history.forward();
+	},
+	render: function() {
+
+		var msgBack = this.props.state.state > 1 ? "Back" : " ";
+		var msgForward = this.props.state.state < 3 ? "Forward" : " ";
+
+		return (
+			React.createElement("div", {className: "header-component"}, 
+				React.createElement("div", {className: "btn-back nav-btns", onClick: this.onBackSelect}, msgBack), 
+				React.createElement("div", {className: "header-title"}, "Project Name"), 
+				React.createElement("div", {className: "btn-forward nav-btns", onClick: this.onFowardSelect})
+			)
+		);
+	}
+});
+
+var ProjectHeader = React.createClass({displayName: "ProjectHeader",
+	render: function() {
+		return (
+			React.createElement("div", {className: "header-component"}
+				
+			)
+		);
+	}
+});
+
 var ProjectItem = React.createClass({displayName: "ProjectItem",
 	getInitialState: function(){
 		return {
@@ -17,7 +58,8 @@ var ProjectItem = React.createClass({displayName: "ProjectItem",
 			//console.log(details.Entries[0]);
 			component.setState({
 				projectDetails: details.Entries[0],
-				accountID: details.Entries[0].AccountPortfolioID
+				accountID: details.Entries[0].AccountPortfolioID,
+				projectStatus: details.Entries[0].ProjectStatusName
 			});
 			return genome_api.getUser(details.Entries[0].ProjectManagerUserID);
 		})
@@ -50,7 +92,8 @@ var ProjectItem = React.createClass({displayName: "ProjectItem",
 				React.createElement("div", {className: "card-content-container"}, 
 					React.createElement("h2", {className: "project-name heading"}, details.CoreName), 
 					React.createElement("div", {className: "project-portfolio"}, this.state.accountName), 
-					React.createElement("div", {className: "project-division"}, this.state.companyName)
+					React.createElement("div", {className: "project-division"}, this.state.companyName), 
+					React.createElement("div", {className: "project-status"}, this.state.projectStatus)
 				)
 			)
 		);
@@ -71,9 +114,8 @@ var ProjectList = React.createClass({displayName: "ProjectList",
 
 		// Get current user ID and their assigned tasks.
 		genome_api.getCurrentUser().then(function(id) {
-			component.setState({
-				UserID: id
-			});
+			//component.setState({UserID: 5669}); // James MacDonald projects and their tasks....
+			component.setState({UserID: id});
 
 			return genome_api.getUserTasks(component.state.UserID);
 		})
@@ -94,6 +136,7 @@ var ProjectList = React.createClass({displayName: "ProjectList",
 			component.setState({
 				Projects: projectIDs
 			});
+
 		});
 
 	},
@@ -105,15 +148,16 @@ var ProjectList = React.createClass({displayName: "ProjectList",
 		this.state.Projects.forEach(function(projectID) {
 			//console.log(task);
 			projectItems.push(
-				React.createElement(ProjectItem, {
-					project: projectID}
-				)
+				React.createElement(ProjectItem, {project: projectID})
 			);
 		});
 
 		return (
-			React.createElement("ul", {className: "project-list card-list-view"}, 
-				projectItems
+			React.createElement("div", {className: "project-list-container view-container"}, 
+				React.createElement(ProjectHeader, null), 
+				React.createElement("ul", {className: "project-list card-list-view"}, 
+					projectItems
+				)
 			)
 		);
 
@@ -124,10 +168,10 @@ var ProjectList = React.createClass({displayName: "ProjectList",
  * Initialize application.
  */
 $(document).ready(function(e) {
+	
 	onRouteChanged();
 
 	// Event Listeners.
-	$('.btn-back').click(onBackClicked);
 	window.addEventListener('hashchange', onRouteChanged, false);
 
 });
@@ -138,40 +182,26 @@ $(document).ready(function(e) {
 function onRouteChanged() {
 
 	var app_conainter = document.getElementById('app-container');
-
-	// Unmount current component.
-	React.unmountComponentAtNode(document.getElementById('app-container'));
+	var component;
 
 	// Load project view.
 	if (window.location.hash.indexOf("/project/") > 0) {
-		React.render(
-			React.createElement(TaskList, null),
-			app_conainter
-		);
-	}
-
-	// Load task view.
-	else if (window.location.hash.indexOf("/task/") > 0) {
-		React.render(
-			React.createElement(TaskDescription, null),
-			app_conainter
-		);
+		component = React.createElement(TaskList, null);
+		$(app_conainter).addClass('task-view')
+			.removeClass('project-view');
 	}
 
 	else {
-		React.render(
-			React.createElement(ProjectList, null),
-			app_conainter
-		);
+		component = React.createElement(ProjectList, null);
+		$(app_conainter).addClass('project-view')
+			.removeClass('task-view');
 	}
 
-}
+	React.render(
+		component,
+		app_conainter
+	);
 
-/**
- * 
- */
-function onBackClicked(e) {
-	window.history.back();
 }
 var TaskAddComment = React.createClass({displayName: "TaskAddComment",
 	render: function() {
@@ -275,6 +305,25 @@ var TaskDescription = React.createClass({displayName: "TaskDescription",
 	}
 });
 
+var TaskHeader = React.createClass({displayName: "TaskHeader",
+	getInitialState: function() {
+		return {
+			title: ""
+		};
+	},
+	onBackSelect: function() {
+		window.history.back();
+	},
+	render: function() {
+		return (
+			React.createElement("div", {className: "header-component"}, 
+				React.createElement("div", {className: "btn-back nav-btns", onClick: this.onBackSelect}, "Back"), 
+				React.createElement("div", {className: "header-title"}, this.props.projectName)
+			)
+		);
+	}
+});
+
 var TaskItem = React.createClass({displayName: "TaskItem",
 	getInitialState: function() {
 		return {
@@ -308,19 +357,26 @@ var TaskItem = React.createClass({displayName: "TaskItem",
   	},
 	render: function() {
 
+		var display = {
+			display: this.props.visible ? 'block' : 'none'
+		};
+		var taskURL = "https://genome.klick.com/tickets/#/details/"+ this.props.task.TicketID;
+
 		return (
-			React.createElement("li", {className: "task-item card-item", onClick: this.onTaskItemClicked}, 
-				React.createElement("div", {className: "card-photo-container"}, 
-					React.createElement("div", {className: "photo", style: this.state.userPhoto}), 
-					React.createElement("div", {className: "photo-of task-user"}, this.props.task.AssigneeUserFullName)
-				), 
-				React.createElement("div", {className: "card-content-container"}, 
-					React.createElement("h2", {className: "heading"}, this.props.task.Title), 
-					
-					React.createElement("div", {className: "task-portfolio"}, "Status: ", this.props.task.TicketStatusName), 
-					React.createElement("div", {className: "task-updated metadata"}, "Last updated on ", Util.absoluteDate(this.props.task.Updated), " by ", this.state.updatedUserName), 
-					React.createElement("div", {className: "task-deadline metadata"}, "Deadline: ", this.state.deadline), 
-					React.createElement("div", {className: "task-id metadata"}, this.props.task.TicketID)
+			React.createElement("li", {className: "task-item card-item", style: display}, 
+				React.createElement("a", {href: taskURL, target: "_blank", className: "task-link"}, 
+					React.createElement("div", {className: "card-photo-container"}, 
+						React.createElement("div", {className: "photo", style: this.state.userPhoto}), 
+						React.createElement("div", {className: "photo-of task-user"}, this.props.task.AssigneeUserFullName)
+					), 
+					React.createElement("div", {className: "card-content-container"}, 
+						React.createElement("h2", {className: "heading"}, this.props.task.Title), 
+						
+						React.createElement("div", {className: "task-portfolio"}, "Status: ", this.props.task.TicketStatusName), 
+						React.createElement("div", {className: "task-updated metadata"}, "Last updated on ", Util.absoluteDate(this.props.task.Updated), " by ", this.state.updatedUserName), 
+						React.createElement("div", {className: "task-deadline metadata"}, "Deadline: ", this.state.deadline), 
+						React.createElement("div", {className: "task-id metadata"}, this.props.task.TicketID)
+					)
 				)
 			)
 		);
@@ -331,38 +387,123 @@ var TaskList = React.createClass({displayName: "TaskList",
 	getInitialState: function(){
 		return {
 			tasks: [],
+			assignedUsers: [],		
+			assignedUsersIDs: [],		
+			currentUser: 0,
+			currentProjectName: "",
+			filterUser: 0,
+			isFiltered: false
 		};
 	},
 	componentDidMount: function() {
 
 		var component = this;
+		var projectID = window.location.hash.replace(/^#\/?|\/$/g, '').split('/')[1];
 
-		// Get current user ID and their assigned tasks.
-		genome_api.getProjectTasks(window.location.hash.substring(10)).then(function(data) {
+		// Get project tasks.
+		genome_api.getProjectTasks(projectID).then(function(data) {
 			component.setState({
 				tasks: data.Entries
 			});
-		});
 
+			// Get a list of current assigned users.
+			data.Entries.forEach(function(task) {
+
+				// Check for duplicates.
+				if (component.state.assignedUsersIDs.indexOf(task.AssigneeUserID) < 0) {
+					component.state.assignedUsersIDs.push(task.AssigneeUserID);
+					component.state.assignedUsers.push({
+						id: task.AssigneeUserID,
+						userName: task.AssigneeUserFullName
+					});
+				}
+			});
+
+			return genome_api.getCurrentUser();
+		})
+		.then(function(data) {
+			component.setState({
+				currentUser: data
+			});
+
+			return genome_api.getProjectDetails(projectID)
+		})
+		.then(function(data) {
+			component.setState({
+				currentProjectName: data.Entries[0].CoreName
+			});
+		});
+	},
+	filterByUser: function(ev) {
+		if (ev.target.value > 0) {
+			//console.log("ev.target.value: "+ ev.target.value)
+			this.setState({
+				filterUser: ev.target.value,
+				isFiltered: true
+			});
+		}
+
+		else {
+			this.setState({
+				filterUser: 0,
+				isFiltered: false
+			});
+		}
 	},
 	render: function() {
 
-		var userTasks = [];
+		var projectTasks = [];
+		var component = this;
 
 		// Push each task into the array.
 		this.state.tasks.forEach(function(task) {
-			//console.log(task);
-			userTasks.push(
-				React.createElement(TaskItem, {
-					task: task}
-				)
+			//console.log(task.AssigneeUserID);
+			var isVisible = true;
+
+			if (component.state.isFiltered) 
+				isVisible = (task.AssigneeUserID == component.state.filterUser) ? true : false;
+			
+			projectTasks.push(
+				React.createElement(TaskItem, {task: task, visible: isVisible})
+			);
+		}.bind(this));
+
+		return (
+			React.createElement("div", {className: "task-list-container view-container"}, 
+				React.createElement(TaskHeader, {projectName: this.state.currentProjectName}), 
+				React.createElement("ul", {className: "task-list card-list-view"}, 
+					projectTasks
+				), 
+				React.createElement(TaskListFilter, {users: this.state.assignedUsers, onUserFiltered: this.filterByUser})
+			)
+
+		);
+
+	}
+});
+
+var TaskListFilter = React.createClass({displayName: "TaskListFilter",
+	render: function() {
+
+		var usersList = [];
+
+		this.props.users.forEach(function(user) {
+			usersList.push(
+				React.createElement("option", {value: user.id}, user.userName)
 			);
 		});
 
 		return (
-			React.createElement("ul", {className: "task-list card-list-view"}, 
-				userTasks
+			React.createElement("div", {className: "filter-container"}, 
+				React.createElement("div", null, 
+					"Assigned user:", 
+					React.createElement("select", {onChange: this.props.onUserFiltered}, 
+						React.createElement("option", {value: "0"}, "--"), 
+						usersList
+					)
+				)
 			)
+
 		);
 
 	}

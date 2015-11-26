@@ -11,9 +11,8 @@ var ProjectList = React.createClass({
 
 		// Get current user ID and their assigned tasks.
 		genome_api.getCurrentUser().then(function(id) {
-			component.setState({
-				UserID: id
-			});
+			//component.setState({UserID: 5669}); // James MacDonald projects and their tasks....
+			component.setState({UserID: id});
 
 			return genome_api.getUserTasks(component.state.UserID);
 		})
@@ -34,6 +33,7 @@ var ProjectList = React.createClass({
 			component.setState({
 				Projects: projectIDs
 			});
+
 		});
 
 	},
@@ -45,16 +45,17 @@ var ProjectList = React.createClass({
 		this.state.Projects.forEach(function(projectID) {
 			//console.log(task);
 			projectItems.push(
-				<ProjectItem 
-					project={projectID}
-				/>
+				<ProjectItem project={projectID} />
 			);
 		});
 
 		return (
-			<ul className="project-list card-list-view">
-				{projectItems}
-			</ul>
+			<div className="project-list-container view-container">
+				<ProjectHeader />
+				<ul className="project-list card-list-view">
+					{projectItems}
+				</ul>
+			</div>
 		);
 
 	}

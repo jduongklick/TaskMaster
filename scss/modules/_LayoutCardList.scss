@@ -3,7 +3,7 @@
  */
 .card-list-view {
 	margin: 0;
-	padding: 0;
+	padding: 0 10px;
 }
 
 .card-item {
@@ -26,6 +26,10 @@
 
 	.metadata {
 		font-size: 13px;
+	}
+
+	.task-link {
+		color: #000000;
 	}
 
 }

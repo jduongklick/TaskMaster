@@ -27,8 +27,17 @@ h2 {
 
 .app-container {
 	@include outer-container;
-	padding: 65px 10px 10px 10px;
+
+	&.project-view {
+		padding: 65px 0 0 0;
+	}
+
+	&.task-view {
+		padding: 65px 0 65px 0;
+	}
+
 }
+
 
 /**
  * =States

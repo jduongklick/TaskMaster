@@ -17,7 +17,8 @@ var ProjectItem = React.createClass({
 			//console.log(details.Entries[0]);
 			component.setState({
 				projectDetails: details.Entries[0],
-				accountID: details.Entries[0].AccountPortfolioID
+				accountID: details.Entries[0].AccountPortfolioID,
+				projectStatus: details.Entries[0].ProjectStatusName
 			});
 			return genome_api.getUser(details.Entries[0].ProjectManagerUserID);
 		})
@@ -51,6 +52,7 @@ var ProjectItem = React.createClass({
 					<h2 className="project-name heading">{details.CoreName}</h2>
 					<div className="project-portfolio">{this.state.accountName}</div>
 					<div className="project-division">{this.state.companyName}</div>
+					<div className="project-status">{this.state.projectStatus}</div>
 				</div>
 			</li>
 		);
