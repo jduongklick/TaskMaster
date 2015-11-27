@@ -10,7 +10,7 @@ var TaskHeader = React.createClass({
 	render: function() {
 		return (
 			<div className="header-component">
-				<div className="btn-back nav-btns" onClick={this.onBackSelect}>Back</div>
+				<a className="btn-back nav-btns" onClick={this.onBackSelect}>Back</a>
 				<div className="header-title">{this.props.projectName}</div>
 			</div>
 		);

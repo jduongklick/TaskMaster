@@ -50,9 +50,9 @@ var ProjectItem = React.createClass({
 				</div>
 				<div className="card-content-container">
 					<h2 className="project-name heading">{details.CoreName}</h2>
-					<div className="project-portfolio">{this.state.accountName}</div>
-					<div className="project-division">{this.state.companyName}</div>
-					<div className="project-status">{this.state.projectStatus}</div>
+					<div className="project-portfolio metadata">{this.state.accountName}</div>
+					<div className="project-division metadata">{this.state.companyName}</div>
+					<div className="project-status metadata">{this.state.projectStatus}</div>
 				</div>
 			</li>
 		);

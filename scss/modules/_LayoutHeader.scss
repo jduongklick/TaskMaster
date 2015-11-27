@@ -2,8 +2,10 @@
  * =Header
  */
  .header-component {
- 	background: cadetblue;
+ 	background-color: #03a9f4;
 	box-sizing: border-box;
+	color: #FFFFFF;
+	line-height: 30px;
  	padding: 10px;
  	position: fixed;
  	top: 0;
@@ -16,6 +18,7 @@
 	}
 
 	.header-title {
+		font-size: 16px;
 		text-align: center;
 	}
 

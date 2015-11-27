@@ -45,9 +45,8 @@ var TaskItem = React.createClass({
 					</div>
 					<div className="card-content-container">
 						<h2 className="heading">{this.props.task.Title}</h2>
-						
-						<div className="task-portfolio">Status: {this.props.task.TicketStatusName}</div>
-						<div className="task-updated metadata">Last updated on {Util.absoluteDate(this.props.task.Updated)} by {this.state.updatedUserName}</div>
+						<div className="task-portfolio metadata">Status: {this.props.task.TicketStatusName}</div>
+						<div className="task-updated metadata">Last updated: {Util.absoluteDate(this.props.task.Updated)} by {this.state.updatedUserName}</div>
 						<div className="task-deadline metadata">Deadline: {this.state.deadline}</div>
 						<div className="task-id metadata">{this.props.task.TicketID}</div>
 					</div>

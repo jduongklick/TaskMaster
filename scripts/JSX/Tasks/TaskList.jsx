@@ -89,7 +89,7 @@ var TaskList = React.createClass({
 				<ul className="task-list card-list-view">
 					{projectTasks}
 				</ul>
-				<TaskListFilter users={this.state.assignedUsers} onUserFiltered={this.filterByUser} />
+				<TaskListFilter currentUser={this.state.currentUser} users={this.state.assignedUsers} onUserFiltered={this.filterByUser} />
 			</div>
 
 		);

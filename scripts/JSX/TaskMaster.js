@@ -91,9 +91,9 @@ var ProjectItem = React.createClass({displayName: "ProjectItem",
 				), 
 				React.createElement("div", {className: "card-content-container"}, 
 					React.createElement("h2", {className: "project-name heading"}, details.CoreName), 
-					React.createElement("div", {className: "project-portfolio"}, this.state.accountName), 
-					React.createElement("div", {className: "project-division"}, this.state.companyName), 
-					React.createElement("div", {className: "project-status"}, this.state.projectStatus)
+					React.createElement("div", {className: "project-portfolio metadata"}, this.state.accountName), 
+					React.createElement("div", {className: "project-division metadata"}, this.state.companyName), 
+					React.createElement("div", {className: "project-status metadata"}, this.state.projectStatus)
 				)
 			)
 		);
@@ -317,7 +317,7 @@ var TaskHeader = React.createClass({displayName: "TaskHeader",
 	render: function() {
 		return (
 			React.createElement("div", {className: "header-component"}, 
-				React.createElement("div", {className: "btn-back nav-btns", onClick: this.onBackSelect}, "Back"), 
+				React.createElement("a", {className: "btn-back nav-btns", onClick: this.onBackSelect}, "Back"), 
 				React.createElement("div", {className: "header-title"}, this.props.projectName)
 			)
 		);
@@ -371,9 +371,8 @@ var TaskItem = React.createClass({displayName: "TaskItem",
 					), 
 					React.createElement("div", {className: "card-content-container"}, 
 						React.createElement("h2", {className: "heading"}, this.props.task.Title), 
-						
-						React.createElement("div", {className: "task-portfolio"}, "Status: ", this.props.task.TicketStatusName), 
-						React.createElement("div", {className: "task-updated metadata"}, "Last updated on ", Util.absoluteDate(this.props.task.Updated), " by ", this.state.updatedUserName), 
+						React.createElement("div", {className: "task-portfolio metadata"}, "Status: ", this.props.task.TicketStatusName), 
+						React.createElement("div", {className: "task-updated metadata"}, "Last updated: ", Util.absoluteDate(this.props.task.Updated), " by ", this.state.updatedUserName), 
 						React.createElement("div", {className: "task-deadline metadata"}, "Deadline: ", this.state.deadline), 
 						React.createElement("div", {className: "task-id metadata"}, this.props.task.TicketID)
 					)
@@ -474,7 +473,7 @@ var TaskList = React.createClass({displayName: "TaskList",
 				React.createElement("ul", {className: "task-list card-list-view"}, 
 					projectTasks
 				), 
-				React.createElement(TaskListFilter, {users: this.state.assignedUsers, onUserFiltered: this.filterByUser})
+				React.createElement(TaskListFilter, {currentUser: this.state.currentUser, users: this.state.assignedUsers, onUserFiltered: this.filterByUser})
 			)
 
 		);
@@ -483,10 +482,29 @@ var TaskList = React.createClass({displayName: "TaskList",
 });
 
 var TaskListFilter = React.createClass({displayName: "TaskListFilter",
+	getInitialState: function() {
+		return {
+			
+		}
+	},
+	componentDidMount: function() {
+		this.setState({
+			currentUser: this.props.currentUser
+		});
+	},
 	render: function() {
 
 		var usersList = [];
+		var component = this;
 
+		// Sort by first name.
+		this.props.users.sort(function(a, b) {
+			if(a.userName < b.userName) return -1;
+			if(a.userName > b.userName) return 1;
+			return 0;
+		});
+
+		// Create dropdown options.
 		this.props.users.forEach(function(user) {
 			usersList.push(
 				React.createElement("option", {value: user.id}, user.userName)
