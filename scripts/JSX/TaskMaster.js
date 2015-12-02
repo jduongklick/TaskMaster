@@ -377,6 +377,22 @@ var TaskList = React.createClass({displayName: "TaskList",
 						userName: task.AssigneeUserFullName
 					});
 				}
+
+				// Check for checklist items if any.
+				if (task.ChecklistItems.length > 0) {
+					task.ChecklistItems.forEach(function(item) {
+						// Check to see if user is in the list.
+						if (item.AssignedToUserID != null && component.state.assignedUsersIDs.indexOf(item.AssignedToUserID) < 0) {
+							component.state.assignedUsersIDs.push(item.AssignedToUserID);
+							component.state.assignedUsers.push({
+								id: item.AssignedToUserID,
+								userName: item.AssignedToUserName
+							});
+						}
+
+					});
+					
+				}
 			});
 
 			return genome_api.getCurrentUser();
@@ -419,6 +435,18 @@ var TaskList = React.createClass({displayName: "TaskList",
 
 		console.log(".....");
 	},
+	searchCheckListItems: function(list,userID) {
+		
+		var userExist = false;
+
+		list.forEach(function(item) {
+			if (item.AssignedToUserID == userID)
+				userExist = true;
+		});
+
+		return userExist;
+
+	},
 	render: function() {
 
 		var projectTasks = [];
@@ -426,11 +454,11 @@ var TaskList = React.createClass({displayName: "TaskList",
 
 		// Push each task into the array.
 		this.state.tasks.forEach(function(task) {
-			//console.log(task.AssigneeUserID);
+			//console.log(task);
 			var isVisible = true;
 
 			if (component.state.isFiltered) 
-				isVisible = (task.AssigneeUserID == component.state.filterUser) ? true : false;
+				isVisible = (task.AssigneeUserID == component.state.filterUser || ( task.ChecklistItems.length > 0 && component.searchCheckListItems(task.ChecklistItems,component.state.filterUser) ) ) ? true : false;
 			
 			projectTasks.push(
 				React.createElement(TaskItem, {task: task, visible: isVisible})
