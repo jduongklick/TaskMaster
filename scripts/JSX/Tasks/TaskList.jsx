@@ -7,6 +7,7 @@ var TaskList = React.createClass({
 			currentUser: 0,
 			currentProjectName: "",
 			filterUser: 0,
+			filterName: "",
 			isFiltered: false
 		};
 	},
@@ -38,7 +39,9 @@ var TaskList = React.createClass({
 		})
 		.then(function(data) {
 			component.setState({
-				currentUser: data
+				currentUser: data,
+				filterUser: data,
+				isFiltered: true
 			});
 
 			return genome_api.getProjectDetails(projectID)
@@ -65,6 +68,13 @@ var TaskList = React.createClass({
 			});
 		}
 	},
+	filterByName: function(ev) {
+
+		if (ev.target.value.length < 2)
+			return;
+
+		console.log(".....");
+	},
 	render: function() {
 
 		var projectTasks = [];
@@ -89,7 +99,11 @@ var TaskList = React.createClass({
 				<ul className="task-list card-list-view">
 					{projectTasks}
 				</ul>
-				<TaskListFilter currentUser={this.state.currentUser} users={this.state.assignedUsers} onUserFiltered={this.filterByUser} />
+				<TaskListFilter
+					filterUser={this.state.filterUser}
+					users={this.state.assignedUsers}
+					onUserFiltered={this.filterByUser}
+					onNameFiltered={this.filterByName} />
 			</div>
 
 		);

@@ -18,13 +18,14 @@ function onRouteChanged() {
 	var app_conainter = document.getElementById('app-container');
 	var component;
 
-	// Load project view.
+	// Load project tasks.
 	if (window.location.hash.indexOf("/project/") > 0) {
 		component = <TaskList/>;
 		$(app_conainter).addClass('task-view')
 			.removeClass('project-view');
 	}
 
+	// Otherwise, load list of projects.
 	else {
 		component = <ProjectList/>;
 		$(app_conainter).addClass('project-view')

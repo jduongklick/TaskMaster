@@ -1,34 +1,3 @@
-var Header = React.createClass({displayName: "Header",
-	getInitialState: function() {
-		return {
-			history: 0,
-			title: ""
-		};
-	},
-	componentDidMount: function() {
-
-	},
-	onBackSelect: function() {
-		window.history.back();
-	},
-	onFowardSelect: function() {
-		window.history.forward();
-	},
-	render: function() {
-
-		var msgBack = this.props.state.state > 1 ? "Back" : " ";
-		var msgForward = this.props.state.state < 3 ? "Forward" : " ";
-
-		return (
-			React.createElement("div", {className: "header-component"}, 
-				React.createElement("div", {className: "btn-back nav-btns", onClick: this.onBackSelect}, msgBack), 
-				React.createElement("div", {className: "header-title"}, "Project Name"), 
-				React.createElement("div", {className: "btn-forward nav-btns", onClick: this.onFowardSelect})
-			)
-		);
-	}
-});
-
 var ProjectHeader = React.createClass({displayName: "ProjectHeader",
 	render: function() {
 		return (
@@ -114,7 +83,7 @@ var ProjectList = React.createClass({displayName: "ProjectList",
 
 		// Get current user ID and their assigned tasks.
 		genome_api.getCurrentUser().then(function(id) {
-			//component.setState({UserID: 5669}); // James MacDonald projects and their tasks....
+			//component.setState({UserID: 5669}); // James MacDonald projects and his tasks....
 			component.setState({UserID: id});
 
 			return genome_api.getUserTasks(component.state.UserID);
@@ -184,13 +153,14 @@ function onRouteChanged() {
 	var app_conainter = document.getElementById('app-container');
 	var component;
 
-	// Load project view.
+	// Load project tasks.
 	if (window.location.hash.indexOf("/project/") > 0) {
 		component = React.createElement(TaskList, null);
 		$(app_conainter).addClass('task-view')
 			.removeClass('project-view');
 	}
 
+	// Otherwise, load list of projects.
 	else {
 		component = React.createElement(ProjectList, null);
 		$(app_conainter).addClass('project-view')
@@ -203,42 +173,17 @@ function onRouteChanged() {
 	);
 
 }
-var TaskAddComment = React.createClass({displayName: "TaskAddComment",
+var TaskChecklistItem = React.createClass({displayName: "TaskChecklistItem",
 	render: function() {
 		return (
-			React.createElement("div", {className: "task-add-comment"}, 
-				React.createElement("textarea", {className: "task-commentbox"}
-				)
-			)
-		)
-	}
-});
-
-//{this.props.details.Created}
-var TaskComment = React.createClass({displayName: "TaskComment",
-	createMarkup: function(markup) {
-		return {
-			__html: markup
-		};
-	},
-	render: function() {
-		//console.log(this.props.details);
-
-		var userPhoto = {
-			backgroundImage: "url('https://genome.klick.com"+ this.props.details.UserPhotoPath +"')"
-		};
-
-		return (
-			React.createElement("li", {className: "comment"}, 
-				React.createElement("div", {className: "card-photo-container"}, 
-					React.createElement("div", {className: "photo", style: userPhoto}), 
-					React.createElement("div", {className: "photo-of"}, this.props.details.UserName)
-				), 
-				React.createElement("div", {className: "card-content-container", dangerouslySetInnerHTML: this.createMarkup(this.props.details.Comment)})
+			React.createElement("li", {className: "checklist-item"}, 
+				React.createElement("div", {className: "checklist-user"}, this.props.user), 
+				React.createElement("div", {className: "checklist-description"}, this.props.desc)
 			)
 		);
 	}
 });
+
 var TaskDescription = React.createClass({displayName: "TaskDescription",
 	getInitialState: function() {
 		return {
@@ -357,13 +302,24 @@ var TaskItem = React.createClass({displayName: "TaskItem",
   	},
 	render: function() {
 
-		var display = {
-			display: this.props.visible ? 'block' : 'none'
-		};
+		var display = this.props.visible ? "task-item card-item" : "task-item card-item is-hidden";
 		var taskURL = "https://genome.klick.com/tickets/#/details/"+ this.props.task.TicketID;
+		var taskChecklist = [];
+
+		// Check to see if this task has any checklist items.
+		if (this.props.task.ChecklistItems.length > 0) {
+			this.props.task.ChecklistItems.forEach(function(item) {
+				if (item.TicketStatusName == "open") {
+					var assignedUser = item.AssignedToUserName != null ? item.AssignedToUserName : "Unassigned";
+					taskChecklist.push(
+						React.createElement(TaskChecklistItem, {user: assignedUser, desc: item.Description})
+					);
+				}
+			});
+		}
 
 		return (
-			React.createElement("li", {className: "task-item card-item", style: display}, 
+			React.createElement("li", {className: display}, 
 				React.createElement("a", {href: taskURL, target: "_blank", className: "task-link"}, 
 					React.createElement("div", {className: "card-photo-container"}, 
 						React.createElement("div", {className: "photo", style: this.state.userPhoto}), 
@@ -374,7 +330,11 @@ var TaskItem = React.createClass({displayName: "TaskItem",
 						React.createElement("div", {className: "task-portfolio metadata"}, "Status: ", this.props.task.TicketStatusName), 
 						React.createElement("div", {className: "task-updated metadata"}, "Last updated: ", Util.absoluteDate(this.props.task.Updated), " by ", this.state.updatedUserName), 
 						React.createElement("div", {className: "task-deadline metadata"}, "Deadline: ", this.state.deadline), 
-						React.createElement("div", {className: "task-id metadata"}, this.props.task.TicketID)
+						React.createElement("div", {className: "task-id metadata"}, this.props.task.TicketID), 
+
+						React.createElement("ul", {className: "task-checklist metadata"}, 
+							taskChecklist
+						)
 					)
 				)
 			)
@@ -391,6 +351,7 @@ var TaskList = React.createClass({displayName: "TaskList",
 			currentUser: 0,
 			currentProjectName: "",
 			filterUser: 0,
+			filterName: "",
 			isFiltered: false
 		};
 	},
@@ -422,7 +383,9 @@ var TaskList = React.createClass({displayName: "TaskList",
 		})
 		.then(function(data) {
 			component.setState({
-				currentUser: data
+				currentUser: data,
+				filterUser: data,
+				isFiltered: true
 			});
 
 			return genome_api.getProjectDetails(projectID)
@@ -449,6 +412,13 @@ var TaskList = React.createClass({displayName: "TaskList",
 			});
 		}
 	},
+	filterByName: function(ev) {
+
+		if (ev.target.value.length < 2)
+			return;
+
+		console.log(".....");
+	},
 	render: function() {
 
 		var projectTasks = [];
@@ -473,7 +443,11 @@ var TaskList = React.createClass({displayName: "TaskList",
 				React.createElement("ul", {className: "task-list card-list-view"}, 
 					projectTasks
 				), 
-				React.createElement(TaskListFilter, {currentUser: this.state.currentUser, users: this.state.assignedUsers, onUserFiltered: this.filterByUser})
+				React.createElement(TaskListFilter, {
+					filterUser: this.state.filterUser, 
+					users: this.state.assignedUsers, 
+					onUserFiltered: this.filterByUser, 
+					onNameFiltered: this.filterByName})
 			)
 
 		);
@@ -488,14 +462,11 @@ var TaskListFilter = React.createClass({displayName: "TaskListFilter",
 		}
 	},
 	componentDidMount: function() {
-		this.setState({
-			currentUser: this.props.currentUser
-		});
+
 	},
 	render: function() {
 
 		var usersList = [];
-		var component = this;
 
 		// Sort by first name.
 		this.props.users.sort(function(a, b) {
@@ -513,12 +484,15 @@ var TaskListFilter = React.createClass({displayName: "TaskListFilter",
 
 		return (
 			React.createElement("div", {className: "filter-container"}, 
-				React.createElement("div", null, 
-					"Assigned user:", 
-					React.createElement("select", {onChange: this.props.onUserFiltered}, 
+				React.createElement("div", {className: "filter-user"}, 
+					"User:", 
+					React.createElement("select", {onChange: this.props.onUserFiltered, value: this.props.filterUser}, 
 						React.createElement("option", {value: "0"}, "--"), 
 						usersList
 					)
+				), 
+				React.createElement("div", {className: "filter-name"}, 
+					React.createElement("input", {className: "name-filter", type: "text", onChange: this.props.onNameFiltered})
 				)
 			)
 

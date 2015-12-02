@@ -76,7 +76,7 @@ var genome_api = {
 
 		var deferred = Q.defer();
 
-		this.jsonp('Ticket/Filter?TicketStatusIsOpen=true&ProjectID='+ taskID)
+		this.jsonp('Ticket/Filter?TicketStatusIsOpen=true&ProjectID='+ taskID +'&WithChecklistItems=true')
 		.then(function(data) {
 			deferred.resolve(data);
 		});

@@ -31,13 +31,24 @@ var TaskItem = React.createClass({
   	},
 	render: function() {
 
-		var display = {
-			display: this.props.visible ? 'block' : 'none'
-		};
+		var display = this.props.visible ? "task-item card-item" : "task-item card-item is-hidden";
 		var taskURL = "https://genome.klick.com/tickets/#/details/"+ this.props.task.TicketID;
+		var taskChecklist = [];
+
+		// Check to see if this task has any checklist items.
+		if (this.props.task.ChecklistItems.length > 0) {
+			this.props.task.ChecklistItems.forEach(function(item) {
+				if (item.TicketStatusName == "open") {
+					var assignedUser = item.AssignedToUserName != null ? item.AssignedToUserName : "Unassigned";
+					taskChecklist.push(
+						<TaskChecklistItem user={assignedUser} desc={item.Description} />
+					);
+				}
+			});
+		}
 
 		return (
-			<li className="task-item card-item" style={display}>
+			<li className={display}>
 				<a href={taskURL} target="_blank" className="task-link">
 					<div className="card-photo-container">
 						<div className="photo" style={this.state.userPhoto}></div>
@@ -49,6 +60,10 @@ var TaskItem = React.createClass({
 						<div className="task-updated metadata">Last updated: {Util.absoluteDate(this.props.task.Updated)} by {this.state.updatedUserName}</div>
 						<div className="task-deadline metadata">Deadline: {this.state.deadline}</div>
 						<div className="task-id metadata">{this.props.task.TicketID}</div>
+
+						<ul className="task-checklist metadata">
+							{taskChecklist}
+						</ul>
 					</div>
 				</a>
 			</li>

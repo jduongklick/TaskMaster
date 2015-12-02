@@ -5,14 +5,11 @@ var TaskListFilter = React.createClass({
 		}
 	},
 	componentDidMount: function() {
-		this.setState({
-			currentUser: this.props.currentUser
-		});
+
 	},
 	render: function() {
 
 		var usersList = [];
-		var component = this;
 
 		// Sort by first name.
 		this.props.users.sort(function(a, b) {
@@ -30,12 +27,15 @@ var TaskListFilter = React.createClass({
 
 		return (
 			<div className="filter-container">
-				<div>
-					Assigned user:
-					<select onChange={this.props.onUserFiltered}>
+				<div className="filter-user">
+					User:
+					<select onChange={this.props.onUserFiltered} value={this.props.filterUser}>
 						<option value="0">--</option>
 						{usersList}
 					</select>
+				</div>
+				<div className="filter-name">
+					<input className="name-filter" type="text" onChange={this.props.onNameFiltered} />
 				</div>
 			</div>
 
