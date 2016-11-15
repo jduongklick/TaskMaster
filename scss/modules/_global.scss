@@ -38,6 +38,21 @@ h2 {
 
 }
 
+// Clearfix
+.cf,
+.clearfix {
+	&:after,
+	&:before {
+		content: " ";
+		display: table;
+	}
+
+	&:after {
+		clear: both;
+		display: table;
+	}
+}
+
 
 /**
  * =States

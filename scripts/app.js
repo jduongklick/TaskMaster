@@ -129,4 +129,3 @@ var Util = {
 		return moment(date).format("MMM D, YYYY");
 	}
 }
-

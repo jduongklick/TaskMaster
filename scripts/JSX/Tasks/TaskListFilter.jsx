@@ -26,6 +26,12 @@ var TaskListFilter = React.createClass({
 		});
 
 		return (
+			<div className="filter-container1">
+			</div>
+
+		);
+
+		/*
 			<div className="filter-container">
 				<div className="filter-user">
 					User:
@@ -38,8 +44,7 @@ var TaskListFilter = React.createClass({
 					<input className="name-filter" type="text" onChange={this.props.onNameFiltered} />
 				</div>
 			</div>
-
-		);
+		*/
 
 	}
 });

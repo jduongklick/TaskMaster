@@ -2,13 +2,10 @@ var TaskList = React.createClass({
 	getInitialState: function(){
 		return {
 			tasks: [],
-			assignedUsers: [],		
-			assignedUsersIDs: [],		
-			currentUser: 0,
+			assignedUsers: [],	
+			assignedUsersIDs: [],
+			currentUser: "",
 			currentProjectName: "",
-			filterUser: 0,
-			filterName: "",
-			isFiltered: false
 		};
 	},
 	componentDidMount: function() {
@@ -54,10 +51,9 @@ var TaskList = React.createClass({
 			return genome_api.getCurrentUser();
 		})
 		.then(function(data) {
+			// Set filter user to be the current user. 
 			component.setState({
-				currentUser: data,
-				filterUser: data,
-				isFiltered: true
+				currentUser: data
 			});
 
 			return genome_api.getProjectDetails(projectID)
@@ -67,29 +63,6 @@ var TaskList = React.createClass({
 				currentProjectName: data.Entries[0].CoreName
 			});
 		});
-	},
-	filterByUser: function(ev) {
-		if (ev.target.value > 0) {
-			//console.log("ev.target.value: "+ ev.target.value)
-			this.setState({
-				filterUser: ev.target.value,
-				isFiltered: true
-			});
-		}
-
-		else {
-			this.setState({
-				filterUser: 0,
-				isFiltered: false
-			});
-		}
-	},
-	filterByName: function(ev) {
-
-		if (ev.target.value.length < 2)
-			return;
-
-		console.log(".....");
 	},
 	searchCheckListItems: function(list,userID) {
 		
@@ -104,21 +77,23 @@ var TaskList = React.createClass({
 
 	},
 	render: function() {
-
 		var projectTasks = [];
 		var component = this;
 
+
 		// Push each task into the array.
 		this.state.tasks.forEach(function(task) {
-			//console.log(task);
 			var isVisible = true;
 
-			if (component.state.isFiltered) 
-				isVisible = (task.AssigneeUserID == component.state.filterUser || ( task.ChecklistItems.length > 0 && component.searchCheckListItems(task.ChecklistItems,component.state.filterUser) ) ) ? true : false;
-			
-			projectTasks.push(
-				<TaskItem task={task} visible={isVisible} />
-			);
+			// Only render items that are assigned to the user.
+			if (component.state.currentUser == task.AssigneeUserID) {
+
+			}
+
+				projectTasks.push(
+					<TaskItem task={task} currentUser={component.state.currentUser} />
+				);
+
 		}.bind(this));
 
 		return (

@@ -33,7 +33,6 @@ module.exports = function(grunt) {
                 files: {
                     'scripts/taskmaster.min.js': [
                         'scripts/vendor/*.js',
-                        'scripts/JSX/*.js',
                         'scripts/app.js'
                     ]
                 }                
@@ -77,7 +76,7 @@ module.exports = function(grunt) {
             },
 
             uglify: {
-                files: ['scripts/JSX/TaskMaster.js', 'scripts/app.js'],
+                files: ['scripts/app.js'],
                 tasks: ['uglify'],
                 options: {
                     spawn: false

@@ -3,13 +3,13 @@
 @import "modules/grid-settings";
 @import "neat/neat";
 
+// Global & module styles.
+@import "modules/global";
+@import "modules/layout-header";
+@import "modules/layout-footer";
+@import "modules/layout-card-list";
 
-@import "modules/app";
-@import "modules/_LayoutHeader";
-@import "modules/_LayoutFooter";
-@import "modules/_LayoutCardList";
-
-
-
-
-@import "modules/TaskDescription";
+// Styles for specific pages.
+@import "pages/project-list";
+@import "pages/task-list";
+@import "pages/task-description";

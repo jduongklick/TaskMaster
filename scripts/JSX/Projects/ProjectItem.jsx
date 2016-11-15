@@ -1,6 +1,7 @@
 var ProjectItem = React.createClass({
 	getInitialState: function(){
 		return {
+			isAvailable: true,
 			projectDetails: {},
 			userPhoto: {}
 		};
@@ -14,7 +15,9 @@ var ProjectItem = React.createClass({
 
 		genome_api.getProjectDetails(this.props.project)
 		.then(function(details) {
-			//console.log(details.Entries[0]);
+
+			//console.log(details.Entries[0].AccountPortfolioID);
+
 			component.setState({
 				projectDetails: details.Entries[0],
 				accountID: details.Entries[0].AccountPortfolioID,
@@ -43,7 +46,26 @@ var ProjectItem = React.createClass({
 		var details = this.state.projectDetails;
 
 		return (
-			<li className="project-item card-item" onClick={this.onProjectItemClicked}>
+			<li className="project-item card-item" onClick={this.onProjectItemClicked} data-project-id={details.ProjectID}>
+				<div className="card-photo-container">
+					<div className="photo" style={this.state.userPhoto}></div>
+					<div className="photo-of">{details.ProjectManagerName}</div>
+				</div>
+				<div className="card-content-container">
+					<h2 className="project-name heading">{details.CoreName}</h2>
+					<div className="project-id metadata">{details.ProjectID}</div>
+					<div className="project-portfolio metadata">{this.state.accountName}</div>
+					<div className="project-division metadata">{this.state.companyName}</div>
+					<div className="project-status metadata">{this.state.projectStatus}</div>
+				</div>
+			</li>
+		);
+
+	}
+});
+
+
+/*
 				<div className="card-photo-container">
 					<div className="photo" style={this.state.userPhoto}></div>
 					<div className="photo-of">{details.ProjectManagerName}</div>
@@ -54,8 +76,4 @@ var ProjectItem = React.createClass({
 					<div className="project-division metadata">{this.state.companyName}</div>
 					<div className="project-status metadata">{this.state.projectStatus}</div>
 				</div>
-			</li>
-		);
-
-	}
-});
+*/

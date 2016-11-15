@@ -1,0 +1,22 @@
+
+.task-view .task-checklist-container .heading {
+	margin-top: 20px;
+}
+
+.task-view .task-checklist {
+	margin-top: 20px;
+	padding: 0;
+	list-style: none;
+	.checklist-item {
+		clear: both;
+		display: block;
+	}
+	.checklist-user {
+		@include span-columns(1);
+		padding-bottom: 10px;
+	}
+	.checklist-description {
+		@include span-columns(3);
+		padding-bottom: 10px;
+	}
+}
