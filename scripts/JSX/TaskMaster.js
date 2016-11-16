@@ -44,12 +44,12 @@ var ProjectItem = React.createClass({displayName: "ProjectItem",
 			return genome_api.getAccountPortfolio(component.state.accountID);
 		})
 		.then(function(data) {
+
 			component.setState({
 				accountName: data.Entries[0].Name,
 				companyName: data.Entries[0].Division
 			});
 		});
-
 	},
 	render: function() {
 
@@ -73,20 +73,6 @@ var ProjectItem = React.createClass({displayName: "ProjectItem",
 
 	}
 });
-
-
-/*
-				<div className="card-photo-container">
-					<div className="photo" style={this.state.userPhoto}></div>
-					<div className="photo-of">{details.ProjectManagerName}</div>
-				</div>
-				<div className="card-content-container">
-					<h2 className="project-name heading">{details.CoreName}</h2>
-					<div className="project-portfolio metadata">{this.state.accountName}</div>
-					<div className="project-division metadata">{this.state.companyName}</div>
-					<div className="project-status metadata">{this.state.projectStatus}</div>
-				</div>
-*/
 
 var ProjectList = React.createClass({displayName: "ProjectList",
 	getInitialState: function(){
@@ -431,20 +417,14 @@ var TaskList = React.createClass({displayName: "TaskList",
 		var projectTasks = [];
 		var component = this;
 
-
 		// Push each task into the array.
 		this.state.tasks.forEach(function(task) {
-			var isVisible = true;
-
 			// Only render items that are assigned to the user.
-			if (component.state.currentUser == task.AssigneeUserID) {
-
-			}
-
+			if (component.searchCheckListItems(task.ChecklistItems,component.state.currentUser) || component.state.currentUser == task.AssigneeUserID) {
 				projectTasks.push(
 					React.createElement(TaskItem, {task: task, currentUser: component.state.currentUser})
 				);
-
+			}
 		}.bind(this));
 
 		return (
@@ -546,24 +526,3 @@ var TaskSubitem = React.createClass({displayName: "TaskSubitem",
 		);
 	}
 });
-
-
-/*
-	<div className={"card-container task-checklist-container cf"}>
-		<h2 className="heading">Subtasks</h2>
-		<ul className="task-checklist metadata">
-			{taskChecklist}
-		</ul>
-	</div>
-*/
-
-/*
-	this.props.task.ChecklistItems.forEach(function(item) {
-		if (item.TicketStatusName == "open") {
-			var assignedUser = item.AssignedToUserName != null ? item.AssignedToUserName : "Unassigned";
-			taskChecklist.push(
-				<TaskChecklistItem user={assignedUser} desc={item.Description} />
-			);
-		}
-	});
-*/

@@ -1,4 +1,8 @@
 // Hide and remove projects that the user doesn't have access to.
 .project-view .card-item:not([data-project-id]) {
-	display: none;
+	display: none !important;
+}
+
+.project-view .project-item {
+	transition: all 5s ease-in;
 }

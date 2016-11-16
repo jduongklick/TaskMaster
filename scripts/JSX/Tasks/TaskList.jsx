@@ -80,20 +80,14 @@ var TaskList = React.createClass({
 		var projectTasks = [];
 		var component = this;
 
-
 		// Push each task into the array.
 		this.state.tasks.forEach(function(task) {
-			var isVisible = true;
-
 			// Only render items that are assigned to the user.
-			if (component.state.currentUser == task.AssigneeUserID) {
-
-			}
-
+			if (component.searchCheckListItems(task.ChecklistItems,component.state.currentUser) || component.state.currentUser == task.AssigneeUserID) {
 				projectTasks.push(
 					<TaskItem task={task} currentUser={component.state.currentUser} />
 				);
-
+			}
 		}.bind(this));
 
 		return (

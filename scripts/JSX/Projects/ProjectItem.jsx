@@ -34,12 +34,12 @@ var ProjectItem = React.createClass({
 			return genome_api.getAccountPortfolio(component.state.accountID);
 		})
 		.then(function(data) {
+
 			component.setState({
 				accountName: data.Entries[0].Name,
 				companyName: data.Entries[0].Division
 			});
 		});
-
 	},
 	render: function() {
 
@@ -63,17 +63,3 @@ var ProjectItem = React.createClass({
 
 	}
 });
-
-
-/*
-				<div className="card-photo-container">
-					<div className="photo" style={this.state.userPhoto}></div>
-					<div className="photo-of">{details.ProjectManagerName}</div>
-				</div>
-				<div className="card-content-container">
-					<h2 className="project-name heading">{details.CoreName}</h2>
-					<div className="project-portfolio metadata">{this.state.accountName}</div>
-					<div className="project-division metadata">{this.state.companyName}</div>
-					<div className="project-status metadata">{this.state.projectStatus}</div>
-				</div>
-*/

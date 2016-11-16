@@ -28,24 +28,3 @@ var TaskSubitem = React.createClass({
 		);
 	}
 });
-
-
-/*
-	<div className={"card-container task-checklist-container cf"}>
-		<h2 className="heading">Subtasks</h2>
-		<ul className="task-checklist metadata">
-			{taskChecklist}
-		</ul>
-	</div>
-*/
-
-/*
-	this.props.task.ChecklistItems.forEach(function(item) {
-		if (item.TicketStatusName == "open") {
-			var assignedUser = item.AssignedToUserName != null ? item.AssignedToUserName : "Unassigned";
-			taskChecklist.push(
-				<TaskChecklistItem user={assignedUser} desc={item.Description} />
-			);
-		}
-	});
-*/
