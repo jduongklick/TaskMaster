@@ -83,6 +83,16 @@ var genome_api = {
 
 		return deferred.promise;
 	},
+	getProjectBudget: function(projectID) {
+		var deferred = Q.defer();
+
+		this.jsonp('Project/Budget?ProjectID='+ projectID)
+		.then(function(data) {
+			deferred.resolve(data);
+		});
+
+		return deferred.promise;
+	},
 	getAccountPortfolio: function(accountID) {
 
 		var deferred = Q.defer();

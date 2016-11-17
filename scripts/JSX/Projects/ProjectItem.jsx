@@ -1,7 +1,6 @@
 var ProjectItem = React.createClass({
 	getInitialState: function(){
 		return {
-			isAvailable: true,
 			projectDetails: {},
 			userPhoto: {}
 		};
@@ -19,6 +18,8 @@ var ProjectItem = React.createClass({
 				projectDetails: details.Entries[0],
 				projectStatus: details.Entries[0].ProjectStatusName,
 			});
+
+			// Get the PM on the project.
 			return genome_api.getUser(details.Entries[0].ProjectManagerUserID);
 		})
 		.then(function(data) {
@@ -27,10 +28,24 @@ var ProjectItem = React.createClass({
 					backgroundImage: "url('https://genome.klick.com"+ data.PhotoPath +"')"
 				}
 			});
+
+			// Get project budget details.
+			return genome_api.getProjectBudget(component.state.projectDetails.ProjectID);
+		})
+		.then(function(data) {
+			var estimate = data.Data.Forecast.Estimate
+			var actual = data.Data.Forecast.Actual
+			var balance = estimate - actual;
+
+			component.setState({
+				projectEstimate: numeral(estimate).format('$0,0.00'),
+				projectActual: numeral(actual).format('$0,0.00'),
+				projectBalance: numeral(estimate - actual).format('$0,0.00'),
+				projectBudgetStyle: {
+					color: balance > 0 ? 'green' : 'red'
+				}
+			});
 		});
-	},
-	componentDidUpdate: function() {
-		
 	},
 	render: function() {
 
@@ -44,9 +59,11 @@ var ProjectItem = React.createClass({
 				</div>
 				<div className="card-content-container">
 					<h2 className="project-name heading">{details.CoreName}</h2>
-					<div className="project-id metadata">{details.ProjectID}</div>
 					<div className="project-status metadata">Project status: {this.state.projectStatus}</div>
 					<div className="project-date-created metadata">Project created: {Util.absoluteDate(details.CreatedDate)}</div>
+
+
+					<div className="project-budget metadata">Balance: <span style={this.state.projectBudgetStyle}>{this.state.projectBalance}</span></div>
 				</div>
 			</li>
 		);
