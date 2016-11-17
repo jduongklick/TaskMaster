@@ -4,7 +4,7 @@ var TaskList = React.createClass({
 			tasks: [],
 			assignedUsers: [],	
 			assignedUsersIDs: [],
-			currentUser: "",
+			filterUser: "",
 			currentProjectName: "",
 		};
 	},
@@ -53,7 +53,7 @@ var TaskList = React.createClass({
 		.then(function(data) {
 			// Set filter user to be the current user. 
 			component.setState({
-				currentUser: data
+				filterUser: data
 			});
 
 			return genome_api.getProjectDetails(projectID)
@@ -76,6 +76,12 @@ var TaskList = React.createClass({
 		return userExist;
 
 	},
+	filterByUser: function(event) {
+		var userID = $(event.target).val();
+		this.setState({
+			filterUser: userID
+		});
+	},
 	render: function() {
 		var projectTasks = [];
 		var component = this;
@@ -83,9 +89,9 @@ var TaskList = React.createClass({
 		// Push each task into the array.
 		this.state.tasks.forEach(function(task) {
 			// Only render items that are assigned to the user.
-			if (component.searchCheckListItems(task.ChecklistItems,component.state.currentUser) || component.state.currentUser == task.AssigneeUserID) {
+			if (component.searchCheckListItems(task.ChecklistItems,component.state.filterUser) || component.state.filterUser == task.AssigneeUserID) {
 				projectTasks.push(
-					<TaskItem task={task} currentUser={component.state.currentUser} />
+					<TaskItem task={task} currentUser={component.state.filterUser} />
 				);
 			}
 		}.bind(this));
@@ -99,8 +105,7 @@ var TaskList = React.createClass({
 				<TaskListFilter
 					filterUser={this.state.filterUser}
 					users={this.state.assignedUsers}
-					onUserFiltered={this.filterByUser}
-					onNameFiltered={this.filterByName} />
+					onUserFiltered={this.filterByUser} />
 			</div>
 
 		);

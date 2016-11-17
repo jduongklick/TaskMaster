@@ -25,13 +25,9 @@ var ProjectItem = React.createClass({displayName: "ProjectItem",
 
 		genome_api.getProjectDetails(this.props.project)
 		.then(function(details) {
-
-			//console.log(details.Entries[0].AccountPortfolioID);
-
 			component.setState({
 				projectDetails: details.Entries[0],
-				accountID: details.Entries[0].AccountPortfolioID,
-				projectStatus: details.Entries[0].ProjectStatusName
+				projectStatus: details.Entries[0].ProjectStatusName,
 			});
 			return genome_api.getUser(details.Entries[0].ProjectManagerUserID);
 		})
@@ -41,22 +37,17 @@ var ProjectItem = React.createClass({displayName: "ProjectItem",
 					backgroundImage: "url('https://genome.klick.com"+ data.PhotoPath +"')"
 				}
 			});
-			return genome_api.getAccountPortfolio(component.state.accountID);
-		})
-		.then(function(data) {
-
-			component.setState({
-				accountName: data.Entries[0].Name,
-				companyName: data.Entries[0].Division
-			});
 		});
+	},
+	componentDidUpdate: function() {
+		
 	},
 	render: function() {
 
 		var details = this.state.projectDetails;
 
 		return (
-			React.createElement("li", {className: "project-item card-item", onClick: this.onProjectItemClicked, "data-project-id": details.ProjectID}, 
+			React.createElement("li", {className: "project-item card-item animated fadeInDown", onClick: this.onProjectItemClicked, "data-project-id": details.ProjectID}, 
 				React.createElement("div", {className: "card-photo-container"}, 
 					React.createElement("div", {className: "photo", style: this.state.userPhoto}), 
 					React.createElement("div", {className: "photo-of"}, details.ProjectManagerName)
@@ -64,9 +55,8 @@ var ProjectItem = React.createClass({displayName: "ProjectItem",
 				React.createElement("div", {className: "card-content-container"}, 
 					React.createElement("h2", {className: "project-name heading"}, details.CoreName), 
 					React.createElement("div", {className: "project-id metadata"}, details.ProjectID), 
-					React.createElement("div", {className: "project-portfolio metadata"}, this.state.accountName), 
-					React.createElement("div", {className: "project-division metadata"}, this.state.companyName), 
-					React.createElement("div", {className: "project-status metadata"}, this.state.projectStatus)
+					React.createElement("div", {className: "project-status metadata"}, "Project status: ", this.state.projectStatus), 
+					React.createElement("div", {className: "project-date-created metadata"}, "Project created: ", Util.absoluteDate(details.CreatedDate))
 				)
 			)
 		);
@@ -277,7 +267,6 @@ var TaskHeader = React.createClass({displayName: "TaskHeader",
 var TaskItem = React.createClass({displayName: "TaskItem",
 	getInitialState: function() {
 		return {
-			showDesc: false
 		};
 	},
 	componentDidMount: function() {
@@ -289,11 +278,14 @@ var TaskItem = React.createClass({displayName: "TaskItem",
 
 		genome_api.getUser(this.props.task.AssigneeUserID)
 		.then(function(data) {
+			console.log(data.PhotoPath);
 			component.setState({
 				userPhoto: {
 					backgroundImage: "url('https://genome.klick.com"+ data.PhotoPath +"')"
-				}
+				},
 			});
+
+			// Get the user who last updated the ticket.
 			return genome_api.getUser(component.props.task.UpdaterUserID);
 		})
 		.then(function(data) {
@@ -315,7 +307,7 @@ var TaskItem = React.createClass({displayName: "TaskItem",
 		}
 
 		return (
-			React.createElement("li", {className: "task-item card-item"}, 
+			React.createElement("li", {className: "task-item card-item animated fadeInDown", "data-task-id": this.props.task.TicketID}, 
 				React.createElement("a", {href: taskURL, target: "_blank", className: "task-link"}, 
 					React.createElement("div", {className: "card-photo-container"}, 
 						React.createElement("div", {className: "photo", style: this.state.userPhoto}), 
@@ -341,7 +333,7 @@ var TaskList = React.createClass({displayName: "TaskList",
 			tasks: [],
 			assignedUsers: [],	
 			assignedUsersIDs: [],
-			currentUser: "",
+			filterUser: "",
 			currentProjectName: "",
 		};
 	},
@@ -390,7 +382,7 @@ var TaskList = React.createClass({displayName: "TaskList",
 		.then(function(data) {
 			// Set filter user to be the current user. 
 			component.setState({
-				currentUser: data
+				filterUser: data
 			});
 
 			return genome_api.getProjectDetails(projectID)
@@ -413,6 +405,12 @@ var TaskList = React.createClass({displayName: "TaskList",
 		return userExist;
 
 	},
+	filterByUser: function(event) {
+		var userID = $(event.target).val();
+		this.setState({
+			filterUser: userID
+		});
+	},
 	render: function() {
 		var projectTasks = [];
 		var component = this;
@@ -420,9 +418,9 @@ var TaskList = React.createClass({displayName: "TaskList",
 		// Push each task into the array.
 		this.state.tasks.forEach(function(task) {
 			// Only render items that are assigned to the user.
-			if (component.searchCheckListItems(task.ChecklistItems,component.state.currentUser) || component.state.currentUser == task.AssigneeUserID) {
+			if (component.searchCheckListItems(task.ChecklistItems,component.state.filterUser) || component.state.filterUser == task.AssigneeUserID) {
 				projectTasks.push(
-					React.createElement(TaskItem, {task: task, currentUser: component.state.currentUser})
+					React.createElement(TaskItem, {task: task, currentUser: component.state.filterUser})
 				);
 			}
 		}.bind(this));
@@ -436,8 +434,7 @@ var TaskList = React.createClass({displayName: "TaskList",
 				React.createElement(TaskListFilter, {
 					filterUser: this.state.filterUser, 
 					users: this.state.assignedUsers, 
-					onUserFiltered: this.filterByUser, 
-					onNameFiltered: this.filterByName})
+					onUserFiltered: this.filterByUser})
 			)
 
 		);
@@ -473,25 +470,15 @@ var TaskListFilter = React.createClass({displayName: "TaskListFilter",
 		});
 
 		return (
-			React.createElement("div", {className: "filter-container1"}
+			React.createElement("div", {className: "filter-container"}, 
+				React.createElement("div", {className: "filter-user"}, 
+					"User:", 
+					React.createElement("select", {onChange: this.props.onUserFiltered, value: this.props.filterUser}, 
+						usersList
+					)
+				)
 			)
-
 		);
-
-		/*
-			<div className="filter-container">
-				<div className="filter-user">
-					User:
-					<select onChange={this.props.onUserFiltered} value={this.props.filterUser}>
-						<option value="0">--</option>
-						{usersList}
-					</select>
-				</div>
-				<div className="filter-name">
-					<input className="name-filter" type="text" onChange={this.props.onNameFiltered} />
-				</div>
-			</div>
-		*/
 
 	}
 });

@@ -1,7 +1,6 @@
 var TaskItem = React.createClass({
 	getInitialState: function() {
 		return {
-			showDesc: false
 		};
 	},
 	componentDidMount: function() {
@@ -13,11 +12,14 @@ var TaskItem = React.createClass({
 
 		genome_api.getUser(this.props.task.AssigneeUserID)
 		.then(function(data) {
+			console.log(data.PhotoPath);
 			component.setState({
 				userPhoto: {
 					backgroundImage: "url('https://genome.klick.com"+ data.PhotoPath +"')"
-				}
+				},
 			});
+
+			// Get the user who last updated the ticket.
 			return genome_api.getUser(component.props.task.UpdaterUserID);
 		})
 		.then(function(data) {
@@ -39,7 +41,7 @@ var TaskItem = React.createClass({
 		}
 
 		return (
-			<li className={"task-item card-item"}>
+			<li className={"task-item card-item animated fadeInDown"} data-task-id={this.props.task.TicketID}>
 				<a href={taskURL} target="_blank" className="task-link">
 					<div className="card-photo-container">
 						<div className="photo" style={this.state.userPhoto}></div>

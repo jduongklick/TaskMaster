@@ -26,25 +26,15 @@ var TaskListFilter = React.createClass({
 		});
 
 		return (
-			<div className="filter-container1">
-			</div>
-
-		);
-
-		/*
 			<div className="filter-container">
 				<div className="filter-user">
 					User:
 					<select onChange={this.props.onUserFiltered} value={this.props.filterUser}>
-						<option value="0">--</option>
 						{usersList}
 					</select>
 				</div>
-				<div className="filter-name">
-					<input className="name-filter" type="text" onChange={this.props.onNameFiltered} />
-				</div>
 			</div>
-		*/
+		);
 
 	}
 });
